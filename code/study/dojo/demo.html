@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>mapDemo</title>
+	<link rel="stylesheet" href="http://10.0.6.94:8080/arcgis_js_v38_api/arcgis_js_api/library/3.8/3.8/js/esri/css/esri.css">
+	<script src="http://10.0.6.94:8080/arcgis_js_v38_api/arcgis_js_api/library/3.8/3.8/"></script>
+	<!-- <script src="http://10.0.6.94:8080/arcgis_js_v38_api/arcgis_js_api/library/3.8/3.8/init.js"></script> -->
+	<script type="text/javascript">
+		/*require(["esri/map", "esri/layers/ArcGISTiledMapServiceLayer", "dojo/domReady!", function(Map, ArcGISTiledMapServiceLayer) {
+			var map = new Map("mapDiv");
+			var agoServiceURL = "http://server.arcgisonline.com/ArcGIS/rest/services/ESRI_StreetMap_World_2D/MapServer";
+			var agoLayer = new ArcGISTiledMapServiceLayer(agoServiceURL, {displayLevels: [0,1,2,3,4,5,6,7]});
+			map.add(agoLayer);
+		}]);*/
+		 dojo.require("esri.map"); 
+		 dojo.addOnLoad(function() {
+		 	var MyMap = new esri.Map("MyMapDiv");
+		    var MyTiledMapServiceLayer = new esri.layers.ArcGISTiledMapServiceLayer ("http://www.arcgisonline.cn/ArcGIS/rest/services/ChinaOnlineCommunity/MapServer");
+		    MyMap.addLayer(MyTiledMapServiceLayer) ;
+		})
+
+	</script>
+</head>
+<body>
+<div class="tundra">
+	<div id="MyMapDiv"></div>
+</div>
+</body>
+</html>

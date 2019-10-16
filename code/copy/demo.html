@@ -1,0 +1,68 @@
+<html>
+
+<head>
+</head>
+
+<body>
+    <p>
+        这是一段文字
+        AAAAAAAAAA
+        BBBBBBBBBB
+        <!-- <span id="range">Range</span> -->
+    </p>
+    <img id="range" src="./start.png" alt="" width="100" height="100">
+    <input id="input" type="text">
+    <button id="button1">选择文字后点击</button>
+    <button id="button2">点击后将选中指定的节点</button>
+    <button id="button3">点击后将选中指定的节点</button>
+    <script>
+    var btn1 = document.getElementById('button1'),
+        btn2 = document.getElementById('button2'),
+        btn3 = document.getElementById('button3'),
+        input = document.getElementById('input'),
+        rangespan = document.getElementById('range');
+
+    var selection = window.getSelection();
+    var range = document.createRange();
+    var e = new MouseEvent('contextmenu', {
+        'view': window,
+        'bubbles': true,
+        // 'cancelable': true
+    });
+    var copy =
+        btn1.addEventListener("click", function(event) {
+            // input.value = selection.toString();
+            document.execCommand('copy');
+        });
+    btn2.addEventListener("click", function(event) {
+        debugger;
+        range.selectNode(rangespan);
+        selection.removeAllRanges(); //删除包含在selection原本的range,也就是取消用户选中的范围
+        selection.addRange(range); //让选中部分变成我们自己定义的节点内容
+        var cancelled = !rangespan.dispatchEvent(e);
+    });
+    btn3.addEventListener("click", function(event) {
+    	
+    });
+    rangespan.addEventListener("contextmenu", function(event) {
+    	debugger;
+        console.log(123);
+        fireKeyEvent(rangespan, "keydown", 89);
+    })
+
+    function fireKeyEvent(el, evtType, keyCode) {
+        evtObj = document.createEvent('UIEvents');
+        evtObj.initUIEvent(evtType, true, true, window, 1);
+
+        delete evtObj.keyCode;
+        if (typeof evtObj.keyCode === "undefined") { //为了模拟keycode
+            Object.defineProperty(evtObj, "keyCode", { value: keyCode });
+        } else {
+            evtObj.key = String.fromCharCode(keyCode);
+        }
+        el.dispatchEvent(evtObj);
+    }
+    </script>
+</body>
+
+</html>

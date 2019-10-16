@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width,user-scalable=no">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1,user-scalable=no">
+    <title>Maps Toolbar</title>
+    <link rel="stylesheet" href="https://js.arcgis.com/3.21/dijit/themes/nihilo/nihilo.css" />
+    <link rel="stylesheet" href="https://js.arcgis.com/3.21/esri/css/esri.css" />
+    <style>
+    html,
+    body,
+    #mainWindow {
+        font-family: sans-serif;
+        height: 100%;
+        width: 100%;
+    }
+
+    html,
+    body {
+        margin: 0;
+        padding: 0;
+    }
+
+    #header {
+        height: 80px;
+        overflow: auto;
+        padding: 0.5em;
+        padding-
+    }
+    </style>
+    <script src="https://js.arcgis.com/3.21/"></script>
+    <script>
+    var map, toolbar;
+
+    require([
+        "esri/map",
+        "esri/toolbars/draw",
+        "esri/toolbars/edit",
+        "esri/graphic",
+
+        "esri/symbols/SimpleMarkerSymbol",
+        "esri/symbols/SimpleLineSymbol",
+        "esri/symbols/SimpleFillSymbol",
+
+        "dojo/_base/event",
+        "dojo/parser", "dijit/registry",
+
+        "dijit/layout/BorderContainer", "dijit/layout/ContentPane",
+        "dijit/form/Button", "dijit/WidgetSet", "dojo/domReady!"
+    ], function(
+        Map, Draw, Edit, Graphic,
+        SimpleMarkerSymbol, SimpleLineSymbol, SimpleFillSymbol,
+        event, parser, registry
+    ) {
+        debugger;
+        parser.parse();
+
+        map = new Map("map", {
+            basemap: "streets",
+            center: [-15.469, 36.428],
+            zoom: 3
+        });
+
+        // map.on("load", createToolbar);
+        dojo.connect(map, "onLoad", createToolbar);
+
+        // loop through all dijits, connect onClick event
+        // listeners for buttons to activate drawing tools
+        registry.forEach(function(d) {
+            // d is a reference to a dijit
+            // could be a layout container or a button
+            if (d.declaredClass === "dijit.form.Button" && d.label === "clear") {
+                d.on("click", clear);
+            }
+            if (d.declaredClass === "dijit.form.Button" && d.label === "edit") {
+                d.on("click", edit);
+            }
+            if (d.declaredClass === "dijit.form.Button") {
+                d.on("click", activateTool);
+            }
+        });
+
+        function clear() {
+
+        }
+
+        function edit() {
+
+        }
+
+        function activateTool() {
+            debugger;
+            var tool = this.label.toUpperCase().replace(/ /g, "_");
+            toolbar.activate(Draw[tool]);
+            map.hideZoomSlider();
+        }
+
+        function createToolbar() {
+            toolbar = new Draw(map);
+            editToolbar = new Edit(map);
+            toolbar.on("draw-end", addToMap);
+        }
+
+        function addToMap(evt) {
+            var symbol;
+            toolbar.deactivate();
+            map.showZoomSlider();
+            switch (evt.geometry.type) {
+                case "point":
+                case "multipoint":
+                    // symbol = new SimpleMarkerSymbol();
+                    var symbol = new SimpleMarkerSymbol({
+                        style: "square",
+                        color: [255, 255, 0]
+                    });
+                    break;
+                case "polyline":
+                    symbol = new SimpleLineSymbol();
+                    break;
+                default:
+                    symbol = new SimpleFillSymbol();
+                    break;
+            }
+            var graphic = new Graphic(evt.geometry, symbol);
+            map.graphics.add(graphic);
+            // Activate the toolbar when you click on a graphic
+            map.graphics.on("click", function(evt) {
+                event.stop(evt);
+                activateEditToolbar(evt.graphic);
+            });
+
+            map.graphics.on("dbl-click", function(evt) {
+                event.stop(evt);
+                // activateEditToolbar(evt.graphic);
+                map.graphics.remove(evt.graphic);
+            });
+            //deactivate the toolbar when you click outside a graphic
+            // map.on("click", function(evt) {
+            //     editToolbar.deactivate();
+            // });
+        }
+
+        function activateEditToolbar(graphic) {
+            var tool = Edit.EDIT_VERTICES | Edit.MOVE | Edit.SCALE | Edit.ROTATE | Edit.EDIT_TEXT;
+            var options = {
+                allowAddVertices: true,
+                allowDeleteVertices: true,
+                uniformScaling: true
+            };
+            editToolbar.activate(tool, graphic, options);
+        }
+    });
+    </script>
+</head>
+
+<body class="nihilo">
+    <!-- <div id="header" data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region:'top'">
+            <span>Draw:<br /></span>
+            <button data-dojo-type="dijit/form/Button" value="123">Point</button>
+            <button data-dojo-type="dijit/form/Button">Multi Point</button>
+            <button data-dojo-type="dijit/form/Button">Line</button>
+            <button data-dojo-type="dijit/form/Button">Polyline</button>
+            <button data-dojo-type="dijit/form/Button">Polygon</button>
+            <button data-dojo-type="dijit/form/Button">Freehand Polyline</button>
+            <button data-dojo-type="dijit/form/Button">Freehand Polygon</button>
+            <button data-dojo-type="dijit/form/Button">Arrow</button>
+            <button data-dojo-type="dijit/form/Button">Triangle</button>
+            <button data-dojo-type="dijit/form/Button">Circle</button>
+            <button data-dojo-type="dijit/form/Button">Ellipse</button>
+            <button data-dojo-type="dijit/form/Button" value="edit" onclick="test()">edit</button>
+            <button data-dojo-type="dijit/form/Button" value="123" onclick="test()">123</button>
+        </div> -->
+    <div class="main" style="position: relative;">
+        <div class="tools" style="position: absolute;right: 20px; top: 20px;z-index: 1000">
+            <button data-dojo-type="dijit/form/Button" value="123">Point</button>
+            <button data-dojo-type="dijit/form/Button">Multi Point</button>
+            <button data-dojo-type="dijit/form/Button">Line</button>
+            <button data-dojo-type="dijit/form/Button">Polyline</button>
+            <button data-dojo-type="dijit/form/Button">Polygon</button>
+            <button data-dojo-type="dijit/form/Button">Freehand Polyline</button>
+            <button data-dojo-type="dijit/form/Button">Freehand Polygon</button>
+            <button data-dojo-type="dijit/form/Button">Arrow</button>
+            <button data-dojo-type="dijit/form/Button">Triangle</button>
+            <button data-dojo-type="dijit/form/Button">Circle</button>
+            <button data-dojo-type="dijit/form/Button">Ellipse</button>
+        </div>
+        <div id="map" style="position: absolute;width: 100%; height: 930px;"></div>
+    </div>
+    <script type="text/javascript">
+    function test() {
+        alert("dsdsa");
+    }
+    </script>
+</body>
+
+</html>

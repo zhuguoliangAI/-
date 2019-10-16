@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<!--<script src="promise.js"></script>-->
+<!--<script src="test.js"></script>-->
+</body>
+<input id="input"/>
+<button id="btn">aaa</button>
+<script>
+  document.querySelector("#btn").addEventListener('click', evt => {
+   click();
+  });
+  document.querySelector("#input").addEventListener('blur', evt => {
+    blur();
+  });
+  function blur () {
+    console.log('blur');
+    return false;
+  }
+  function click () {
+    console.log('click')
+  }
+</script>
+</html>

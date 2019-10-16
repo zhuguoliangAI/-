@@ -1,0 +1,71 @@
+this的绑定规则
+
+1、默认绑定：独立函数调用，这时应用this的默认绑定，this指向全局对象。
+var a = 2;
+function foo() {
+	console.log(this.a);   // 2
+}
+
+
+2、隐式绑定:：调用位置是否有上下文对象，或者说是否被某个对象拥有或者包含。
+function foo() {
+	console.log(this.a);
+}
+
+var obj = {
+	a: 2,
+	foo: foo
+}
+
+obj.foo(); //2
+
+例子中调用位置会使用obj的上下文，导致输出2.
+
+3、显示绑定：使用call或者apply方法，他们的第一个参数是一个对象，会把这个对象绑定到this，接着在掉调用函数时指定这个this。
+
+4、new绑定
+
+
+！！注意：箭头函数不满足上述4条描述。箭头函数的this是根据外层（函数或者全局）决定的。箭头函数的绑定无法被修改。
+function foo() {
+	return (a) => {
+		console.log(this.a);
+	}
+}
+
+var obj1 = {
+	a: 2
+};
+
+var obj2 = {
+	a: 3
+};
+var bar = foo.call(obj1);
+bar.call(obj2);   // 2 不是3 因为第一次调用已经绑定到obj2
+
+
+
+
+js对象（六种主要：boolean,string,number,null,undefined,object）
+对象：可以有两种形式定义，声明形式和构造形式
+
+var obj = {
+	a: 123
+};
+
+'a' in obj // true
+obj.hasOwnProperty('a') // true
+in 操作符会检查对象是否在其对象上以及其原型链中,hasOwnProperty则只会检查是都在其对象上
+
+
+js中的值和引用
+1、简单值总是通过值复制的方式来复制和传递；包括null undefined 字符串 数字 布尔 和 symbol
+2、符合值--对象（数组、分装对象）和函数，总是通过引用复制的方式传值
+
+
+原生函数（内建函数）
+1、Object.prototype.toString.call()  方法可以查看内部熟悉[[Class]]-》当前值的包装类
+
+基本类型没有.length toString这样的属性和方法，需要通过封装对象才可以访问，因此JavaScript会自动为基本类型值包装一个封装对象
+
+拆封：获取封装对象中的基本类型，可以试用valueOf()函数

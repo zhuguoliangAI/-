@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>auto complete</title>
+    <style>
+        bdi {
+            color: rgb(0, 136, 255);
+        }
+
+        li {
+            list-style: none;
+        }
+    </style>
+</head>
+<body>
+<input class="inp" type="text">
+<section>
+    <ul class="container"></ul>
+</section>
+<button id="btn">通知</button>
+</body>
+<script>
+
+    function debounce(fn, timeout = 300) {
+        console.log(1)
+        console.log(fn)
+        let t;
+        return (...args) => {
+            console.log(2)
+            if (t) {
+                clearTimeout(t);
+            }
+            t = setTimeout(() => {
+                fn.apply(fn, args);
+            }, timeout);
+        }
+    }
+
+    // function debounce(fn) {
+    //     let timeout = null; // 创建一个标记用来存放定时器的返回值
+    //     return function () {
+    //         // console.log(123456, this)
+    //         clearTimeout(timeout); // 每当用户输入的时候把前一个 setTimeout clear 掉
+    //         timeout = setTimeout(() => { // 然后又创建一个新的 setTimeout, 这样就能保证输入字符后的 interval 间隔内如果还有字符输入的话，就不会执行 fn 函数
+    //             // console.log(123, this)
+    //             // fn.apply(this, arguments);
+    //             fn()
+    //         }, 500);
+    //     };
+    // }
+
+    function memorize(fn) {
+        const cache = new Map();
+        return (name) => {
+            debugger
+            if (!name) {
+                container.innerHTML = '';
+                return;
+            }
+            if (cache.get(name)) {
+                container.innerHTML = cache.get(name);
+                return;
+            }
+            const res = fn.call(fn, name).join('');
+            cache.set(name, res);
+            container.innerHTML = res;
+        }
+    }
+
+    function handleInput(value) {
+        debugger
+        const reg = new RegExp(`\(${value}\)`);
+        const search = data.reduce((res, cur) => {
+            if (reg.test(cur)) {
+                const match = RegExp.$1;
+                res.push(`<li class="aaa">${cur.replace(match, '<bdi>$&</bdi>')}</li>`);
+            }
+            return res;
+        }, []);
+        return search;
+    }
+
+    function sayHi() {
+        console.log('hello', this);
+    }
+
+    const data = ["上海野生动物园", "上饶野生动物园", "北京巷子", "上海中心", "上海黄埔江", "迪士尼上海", "陆家嘴上海中心"]
+    const container = document.querySelector('.container');
+    const memorizeInput = memorize(handleInput);
+    document.querySelector('.inp').addEventListener('input', debounce(e => {
+        memorizeInput(e.target.value);
+    }));
+    memorizeInput('上');
+
+    document.querySelector("#btn").addEventListener('click', evt => {
+      Notification.requestPermission( function(status) {
+        console.log(status); // 仅当值为 "granted" 时显示通知
+        var n = new Notification("title", {body: "notification body"}); // 显示通知
+      });
+    });
+
+    document.querySelector(".aaa").addEventListener('click', evt => {
+      console.log('click');
+    });
+
+    document.querySelector(".inp").addEventListener('blur', evt => {
+      console.log('blur');
+      container.removeChild(document.querySelector(".aaa"))
+    });
+
+
+    document.querySelector('.inp').addEventListener('input', debounce(sayHi))
+</script>
+</html>

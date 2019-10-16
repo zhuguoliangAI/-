@@ -1,0 +1,30 @@
+function getSum(num) {
+  let arr = Array.from(num.toString());
+  let sum = 0;
+  arr.forEach(value => {
+    sum = sum + value ** 2;
+  });
+  return sum;
+}
+
+var isHappy = function(n) {
+  // let sum = n;
+  // let count = 0;
+  let fast, slow;
+  do {
+    // count++;
+    // sum = getSum(sum);
+    //console.log(sum);
+    fast = getSum(n);
+    fast = getSum(fast);
+    slow = getSum(n);
+    if (sum == 1) {
+      // console.log(true);
+      return true;
+    }
+  } while(fast != slow);
+  // console.log(false);
+  return false;
+};
+
+isHappy(19);

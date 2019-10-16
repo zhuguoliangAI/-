@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1,user-scalable=no"/>
+    <title>Simple Map</title>
+    <link rel="stylesheet" href="https://js.arcgis.com/3.21/esri/css/esri.css">
+    <!-- <link rel="stylesheet" href="10.0.6.94:8080/arcgis_js_v38_api/arcgis_js_api/library/3.8/3.8/js/esri/css/esri.css"> -->
+    <style>
+      html, body, #map {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+   <!--  <script src="10.0.6.94:8080/arcgis_js_v38_api/arcgis_js_api/library/3.8/3.8/init.js"></script>
+   <script src="10.0.6.94:8080/arcgis_js_v38_api/arcgis_js_api/library/3.8/3.8/js/dojo/dojo/dojo.js"></script> -->
+   <script src="https://js.arcgis.com/3.21/"></script>
+    <script>
+      var map;
+      var clickCounter = 0;
+      var member = {
+        id: "123",
+        name: "zhuguoliang"
+      }
+
+      require(["esri/map", "dojo/domReady!"], function(Map) {
+        //新建地图
+        map = new Map("MyMapDiv", {
+          basemap: "topo",  //For full list of pre-defined basemaps, navigate to http://arcg.is/1JVo6Wd
+          center: [116.46, 39.92], // longitude, latitude
+          zoom: 8
+        });
+        dojo.connect(map, "onClick", function(evt){
+          console.log(evt.mapPoint.x);
+          console.log(evt.mapPoint.y);
+          var point = new esri.geometry.Point(evt.mapPoint.x, evt.mapPoint.y, map.spatialReference);
+          /*var symbol = new esri.symbol.SimpleMarkerSymbol({
+            style: "square",
+            color: "blue",
+            size: "10"
+          });*/
+          var symbol = new esri.symbol.PictureMarkerSymbol({
+                                        url: "F:/study/dojo/123.png",
+                                        width: "30",
+                                        height: "30"
+                                      });
+          var attr = {
+                        "id": member.id,
+                        "name": member.name
+                    };
+          var infoTemplate = new esri.InfoTemplate("详情", createMemberInfoWindow());
+          var graphic = new esri.Graphic(point, symbol, attr, infoTemplate);
+          map.graphics.add(graphic);
+        });
+        function createMemberInfoWindow() {
+          var html = '<div class="pop_box_con" >'
+        + '<p><label>项目id：</label><span>' + member.id ? member.id : ""+ '</span></p>'
+        + '<p><label>项目名称：</label><span>' + member.name + '</span></p>'
+          return html;
+        }
+
+      });
+    </script>
+  </head>
+  <body>
+    <div id="MyMapDiv"></div>
+  </body>
+</html>

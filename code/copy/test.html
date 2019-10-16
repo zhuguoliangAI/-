@@ -1,0 +1,18 @@
+<html>
+
+<head>
+    <script language="javascript">
+    function SaveAs(href, name) {
+        var a = window.open(href)
+        a.document.execCommand('Saveas', true, name)
+        a.window.close()
+        return false
+    }
+    </script>
+</head>
+
+<body>
+    <a href="./start.png" onClick="return SaveAs(this.href,'1.jpg')">下载</a>
+</body>
+
+</html>
