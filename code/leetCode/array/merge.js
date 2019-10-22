@@ -10,5 +10,5 @@ var merge = function(nums1, m, nums2, n) {
   console.log(nums1.sort((a, b) => a - b));
   return Array.from(new Set(nums1));
 };
-
+// dsadasd
 merge([1,2,3,0], 3, [2,5,6], 3);
